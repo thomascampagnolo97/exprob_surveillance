@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="armor" type="execute" name="armor_service" args="it.emarolab.armor.ARMORMainService" launch-prefix = "xterm -e"/>
+  <node name= "world_generator" pkg= "exprob_surveillance" type="world_generator.py" launch-prefix = "xterm -e"/>
+  <node name= "fsm_behaviour" pkg= "exprob_surveillance" type="fsm_behaviour.py" output= "screen" />
+</launch>
