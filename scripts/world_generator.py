@@ -23,6 +23,8 @@ import math
 import os
 import sys
 
+sleep_time = 15
+
 
 rp = rospkg.RosPack()
 assignment_path = rp.get_path('exprob_surveillance')
@@ -103,6 +105,7 @@ def load_std_map():
     
     rob_time = client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
     old_rob_time = timestamp_computation(rob_time.queried_objects)
+    #old_rob_time = str(int(1000000000))
     print('R1 old time: ', old_rob_time)
     current_time=str(math.floor(time.time()))
     print('R1 current time: ', current_time)
@@ -112,7 +115,7 @@ def load_std_map():
     
     client.call('ADD','DATAPROP','IND',['visitedAt','R1', 'Long', current_time])
     client.call('REASON','','',[''])
-    rospy.sleep(12)
+    rospy.sleep(sleep_time)
 
     # Visit and timestamp creation for R2
 
@@ -121,6 +124,7 @@ def load_std_map():
     
     rob_time = client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
     old_rob_time = timestamp_computation(rob_time.queried_objects)
+    #old_rob_time = str(int(1665579740))
     print('R2 old time: ', old_rob_time)
     current_time=str(math.floor(time.time()))
     print('R2 current time: ', current_time)
@@ -129,7 +133,7 @@ def load_std_map():
 
     client.call('ADD','DATAPROP','IND',['visitedAt','R2', 'Long', current_time])
     client.call('REASON','','',[''])
-    rospy.sleep(12)
+    rospy.sleep(sleep_time)
 
     # Visit and timestamp creation for R3
 
@@ -138,6 +142,7 @@ def load_std_map():
     
     rob_time = client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
     old_rob_time = timestamp_computation(rob_time.queried_objects)
+    #old_rob_time = str(int(1665579740))
     print('R3 old time: ', old_rob_time)
     current_time=str(math.floor(time.time()))
     print('R3 current time: ', current_time)    
@@ -146,7 +151,7 @@ def load_std_map():
 
     client.call('ADD','DATAPROP','IND',['visitedAt','R3', 'Long', current_time])
     client.call('REASON','','',[''])
-    rospy.sleep(12)
+    rospy.sleep(sleep_time)
 
     # Visit and timestamp creation for R4
 
@@ -155,6 +160,7 @@ def load_std_map():
     
     rob_time = client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
     old_rob_time = timestamp_computation(rob_time.queried_objects)
+    #old_rob_time = str(int(1665579740))
     print('R4 old time: ', old_rob_time)
     current_time=str(math.floor(time.time()))
     print('R4 current time: ', current_time)
@@ -163,7 +169,7 @@ def load_std_map():
 
     client.call('ADD','DATAPROP','IND',['visitedAt','R4', 'Long', current_time])
     client.call('REASON','','',[''])
-    rospy.sleep(12)
+    rospy.sleep(sleep_time)
     
     client.call('REPLACE', 'OBJECTPROP', 'IND', ['isIn', 'Robot1', 'C1', 'R4'])
     client.call('REASON','','',[''])

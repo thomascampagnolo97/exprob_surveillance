@@ -42,10 +42,12 @@ TRANS_URGENT_ROOM = 'urgent_room'           # Transition for room surveillance.
 TRANS_NO_URGENT_ROOM = 'no_urgent_room'     # Transition to notify that there are not urgent rooms.
 
 
-pause_time= 1.0         # Global variable for the sleeping time
+pause_time= 1.5         # Global variable for the sleeping time
 battery_status = 1      # Battery flag, 1 means that it is charged
 urgency_status = 0      # Flag for the urgent room
 world_loaded = False    # World flag, False when the map is not loaded, True when map is loaded correctly
+
+world_done = 0
 
 shared_connection = ''  # String resulting from the connectedTo data property
 are_urgent=''           # String resulting from the query of the individuals in the URGENT class
@@ -407,14 +409,25 @@ class Build_world(smach.State):
 
         global world_loaded
         global robot_position
+        global pub
 
         rospy.Subscriber("world_loading", Bool, world_callback) # world flag (world_loaded)
+
+        pub = rospy.Publisher('world_done', Bool, queue_size=10)
 
         rospy.sleep(pause_time)
         
         if world_loaded == False:
+            world_done = 0
+            pub.publish(world_done)
             return TRANS_WAITING_MAP
+        
         elif world_loaded == True:
+
+            
+            world_done = 1
+            pub.publish(world_done)
+
             client = ArmorClient("example", "ontoRef") 
             client.call('LOAD','FILE','',[WORLD_ONTOLOGY_FILE_PATH, WEB_PATH, 'true', 'PELLET', 'false'])
             
@@ -466,35 +479,40 @@ class No_emergency(smach.State):
         robot_position = find_individual(query_position.queried_objects)
         print(f"{bcolors.STATUS}Actually the robot is in: {bcolors.ENDC}", robot_position)
 
-        
-        
-        current_time=str(math.floor(time.time()))
-        room_time = client.call('QUERY','DATAPROP','IND',['visitedAt', 'R4'])
-        old_room_time = find_time(room_time.queried_objects)
-        
-        #if is_Room == ['URGENT'] & 
 
-        if (int(current_time)-int(old_room_time))>10:
-            print('THERE ARE SOME URGENT ROOMS!!!')
-            rob_time = client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
-            old_rob_time = find_time(rob_time.queried_objects)
+        
+        loc_list = ['R1', 'R2', 'R3', 'R4']
+                
+
+        for room in loc_list:
             current_time=str(math.floor(time.time()))
-            client.call('REPLACE','DATAPROP','IND',['now', 'Robot1', 'Long', current_time, old_rob_time])
-            client.call('REASON','','',[''])
-            
-            room_time = client.call('QUERY','DATAPROP','IND',['visitedAt', 'R4'])
+            room_time = client.call('QUERY','DATAPROP','IND',['visitedAt', room])
             old_room_time = find_time(room_time.queried_objects)
             
-            #client.call('REPLACE','DATAPROP','IND',['visitedAt', 'R4', 'Long', old_room_time, old_room_time])
-            client.call('REASON','','',[''])
+            if (int(current_time)-int(old_room_time))>20:
+                print('THERE ARE SOME URGENT ROOMS!!!')
+                rob_time = client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
+                old_rob_time = find_time(rob_time.queried_objects)
+                current_time=str(math.floor(time.time()))
+                client.call('REPLACE','DATAPROP','IND',['now', 'Robot1', 'Long', current_time, old_rob_time])
+                client.call('REASON','','',[''])
+                
+                room_time = client.call('QUERY','DATAPROP','IND',['visitedAt', room])
+                old_room_time = find_time(room_time.queried_objects)
+                
+                #client.call('REPLACE','DATAPROP','IND',['visitedAt', 'R4', 'Long', old_room_time, old_room_time])
+                client.call('REASON','','',[''])
 
-            are_urgent = urgent_rooms()
-            return TRANS_URGENT_ROOM
+                are_urgent = urgent_rooms()
+                random.shuffle(are_urgent)
+                print(f"{bcolors.URGENT}The urgent rooms are: {bcolors.ENDC}", are_urgent)
+
+                return TRANS_URGENT_ROOM
 
         
-        are_urgent = urgent_rooms()
-        are_urgent = random.shuffle(are_urgent)
-        print(f"{bcolors.URGENT}The urgent rooms are: {bcolors.ENDC}", are_urgent)
+        #are_urgent = urgent_rooms()
+        #random.shuffle(are_urgent)
+        
 
         #print('the urgent rooms are : ', are_urgent )
 
@@ -505,7 +523,7 @@ class No_emergency(smach.State):
                 # The second condition to check on is the urgent rooms
                 if robot_position == 'C1' :
                     print('the robot is in C1 should go in C2')
-                    rospy.sleep(pause_time)
+                    rospy.sleep(3.5)
 
                     change_position(robot_position, 'C2')
                     client.call('REASON','','',[''])
@@ -514,7 +532,7 @@ class No_emergency(smach.State):
                 
                 elif robot_position == "C2"  :
                     print('the robot is in C2 should go in C1')
-                    rospy.sleep(pause_time)
+                    rospy.sleep(3.5)
                     
                     change_position(robot_position, 'C1')
                     client.call('REASON','','',[''])
@@ -560,8 +578,9 @@ class Recharging(smach.State):
         rospy.sleep(pause_time)
         
         if battery_status == 0:
-            #change_position(robot_position, 'E')
-            #client.call('REASON','','',[''])
+            print("@@@@@@@@@@ BATTERY LOW! @@@@@@@")
+            change_position(robot_position, 'E')
+            client.call('REASON','','',[''])
             
             return TRANS_BATTERY_LOW
         else:
@@ -604,11 +623,11 @@ class Surveillance(smach.State):
         are_urgent = urgent_rooms()
         random.shuffle(are_urgent)
         
-        print(f"{bcolors.URGENT}The urgent rooms are: {bcolors.ENDC}", are_urgent)
+        print(f"{bcolors.MOVING}The urgent rooms are: {bcolors.ENDC}", are_urgent)
 
         
         # print('the urgent rooms in room visiting are: ', are_urgent)
-        rospy.sleep(pause_time) 
+        rospy.sleep(pause_time)
         
         if urgency_status == 0:
             return TRANS_NO_URGENT_ROOM
@@ -713,7 +732,7 @@ def main():
     sis.start()
 
     # Subscribers to the respective topics
-    #rospy.Subscriber("battery_signal", Bool, callback_batt) # battery flag (battery_status)
+    rospy.Subscriber("battery_signal", Bool, callback_batt) # battery flag (battery_status)
 
     # Execute the state machine
     outcome = sm.execute()
