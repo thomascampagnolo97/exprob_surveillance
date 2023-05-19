@@ -163,6 +163,8 @@ include_directories(
 catkin_install_python(
   PROGRAMS
     scripts/fsm_behaviour.py
+    scripts/world_generator.py
+    scripts/battery.py
    DESTINATION 
     ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

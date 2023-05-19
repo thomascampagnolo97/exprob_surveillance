@@ -17,6 +17,9 @@ import rospy
 from armor_api.armor_client import ArmorClient
 from std_msgs.msg import Bool
 
+# Import constant name defined to structure the architecture
+from exprob_surveillance import architecture_name_mapper as anm
+
 BATTERY_CAPACITY = 40
 
 world_done = 0
@@ -66,11 +69,11 @@ def battery_behaviour():
     Function to initialize the battery node and to publish the boolean value of the battery to the state ``...``, advertised by :mod:`...`
     
     """
-    
-    pub = rospy.Publisher('battery_signal', Bool, queue_size=10)
-    rospy.init_node('battery_signal_node', anonymous=True)
 
-    rospy.Subscriber("world_done", Bool, world_callback) # world flag for sync
+    rospy.init_node(anm.NODE_ROBOT_BATTERY, log_level=rospy.INFO)
+
+    pub = rospy.Publisher(anm.TOPIC_BATTERY_SIGNAL, Bool, queue_size=10)
+    rospy.Subscriber(anm.TOPIC_SYNC_WORLD_BATTERY, Bool, world_callback) # world flag for sync
 
     
     
