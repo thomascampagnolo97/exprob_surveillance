@@ -16,7 +16,7 @@ When the robot's battery is low, it goes in the E location, and wait for some ti
 start again with the above behaviour.
 
 Publishes to:
-    - /world_battery_sync a Boolean flag for synchronization reasons with the `battery_node`. When the world is correctly loaded
+    - /world_battery_sync a Boolean flag for synchronization reasons with the :mod:`battery` node. When the world is correctly loaded
       the battery's functionality start its execution
 
 Subscribes  to:
@@ -39,7 +39,7 @@ from std_msgs.msg import Bool
 
 # Import constant name defined to structure the architecture
 from exprob_surveillance import architecture_name_mapper as anm
-	
+
 
 # States of the Finite State Machine
 STATE_BUILD_WORLD = 'BUILD_WORLD'       # State where the environment is build using the ontology
@@ -466,9 +466,9 @@ class Build_world(smach.State):
         global pub_wb_sync
 
         # Subscriber of the world flag given by the world_generator_node
-        rospy.Subscriber("world_loading", Bool, world_callback)
+        rospy.Subscriber(anm.TOPIC_WORLD_LOAD, Bool, world_callback)
         # Publisher for the sync between world and battery
-        pub_wb_sync = rospy.Publisher('world_battery_sync', Bool, queue_size=10)
+        pub_wb_sync = rospy.Publisher(anm.TOPIC_SYNC_WORLD_BATTERY, Bool, queue_size=10)
 
         rospy.sleep(wait_time)
 
@@ -488,7 +488,7 @@ class Build_world(smach.State):
             client = ArmorClient("example", "ontoRef") 
             client.call('LOAD','FILE','',[WORLD_ONTOLOGY_FILE_PATH, WEB_PATH, 'true', 'PELLET', 'false'])
             # manipulation of the Robot1, moved into corridor C1 from the intial room E
-            client.manipulation.replace_objectprop_b2_ind('isIn', 'Robot1', 'C1', 'E')
+            client.manipulation.replace_objectprop_b2_ind('isIn', 'Robot1', 'C1', anm.INIT_LOCATION)
             # Reasoning OWL
             client.call('REASON','','',[''])
             # Query from the ontology and find the actual robot position
@@ -667,7 +667,7 @@ class Recharging(smach.State):
         if battery_status == 0:
             print(f"{bcolors.BATTERY}Battery recharging ... {bcolors.ENDC}\n")
             # call function to change the position of the robot (from actual position to the recharging room, E)
-            motion_control(robot_position, 'E')
+            motion_control(robot_position, anm.CHARGE_LOCATION)
             client.call('REASON','','',[''])
             
             return TRANS_BATTERY_LOW
@@ -827,7 +827,7 @@ def main():
     sis.start()
 
     # Subscribers to the topic `battery_signal`
-    rospy.Subscriber("battery_signal", Bool, battery_callback) # battery flag (battery_status)
+    rospy.Subscriber(anm.TOPIC_BATTERY_SIGNAL, Bool, battery_callback) # battery flag (battery_status)
 
     # Execute the state machine
     outcome = sm.execute()

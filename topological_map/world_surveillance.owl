@@ -332,7 +332,7 @@
 
     <owl:NamedIndividual rdf:about="http://bnc/exp-rob-lab/2022-23#R1">
         <hasDoor rdf:resource="http://bnc/exp-rob-lab/2022-23#D1"/>
-        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1684514759</visitedAt>
+        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1684573047</visitedAt>
     </owl:NamedIndividual>
     
 
@@ -342,7 +342,7 @@
 
     <owl:NamedIndividual rdf:about="http://bnc/exp-rob-lab/2022-23#R2">
         <hasDoor rdf:resource="http://bnc/exp-rob-lab/2022-23#D2"/>
-        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1684514775</visitedAt>
+        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1684573062</visitedAt>
     </owl:NamedIndividual>
     
 
@@ -352,7 +352,7 @@
 
     <owl:NamedIndividual rdf:about="http://bnc/exp-rob-lab/2022-23#R3">
         <hasDoor rdf:resource="http://bnc/exp-rob-lab/2022-23#D3"/>
-        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1684514790</visitedAt>
+        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1684573078</visitedAt>
     </owl:NamedIndividual>
     
 
@@ -362,7 +362,7 @@
 
     <owl:NamedIndividual rdf:about="http://bnc/exp-rob-lab/2022-23#R4">
         <hasDoor rdf:resource="http://bnc/exp-rob-lab/2022-23#D4"/>
-        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1684514805</visitedAt>
+        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1684573093</visitedAt>
     </owl:NamedIndividual>
     
 
@@ -371,8 +371,8 @@
 
 
     <owl:NamedIndividual rdf:about="http://bnc/exp-rob-lab/2022-23#Robot1">
-        <isIn rdf:resource="http://bnc/exp-rob-lab/2022-23#C1"/>
-        <now rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1684514820</now>
+        <isIn rdf:resource="http://bnc/exp-rob-lab/2022-23#E"/>
+        <now rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1684573108</now>
         <urgencyThreshold rdf:datatype="http://www.w3.org/2001/XMLSchema#long">20</urgencyThreshold>
     </owl:NamedIndividual>
     
