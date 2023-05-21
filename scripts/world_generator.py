@@ -34,7 +34,7 @@ An example of the topological map can be the follow:
 
     
 Publishes to:
-    - /world_loading a boolean flag to communicate when the environment is totally created
+    - /world_loading a boolean flag to communicate when the environment is created
 
 """
 
@@ -58,7 +58,8 @@ ONTOLOGY_FILE_PATH = os.path.join(assignment_path, "topological_map", "topologic
 WORLD_ONTOLOGY_FILE_PATH = os.path.join(assignment_path, "topological_map", "world_surveillance.owl") # final map OWL, also used for debugging
 WEB_PATH = 'http://bnc/exp-rob-lab/2022-23'
 
-set_urgent_time = 15
+
+set_urgent_time = 15    # sleep time to make every room URGENT at the beginning
 
 
 def timestamp_computation(list):
@@ -73,7 +74,7 @@ def timestamp_computation(list):
     """
 
     timestamp = ''
-    
+
     for i in list:
         for element in range(1, 11):
             timestamp=timestamp+i[element]

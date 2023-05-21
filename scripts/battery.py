@@ -29,8 +29,8 @@ from armor_api.armor_client import ArmorClient
 from exprob_surveillance import architecture_name_mapper as anm
 
 # Global parameters that define time informations
-time_recharge = 0.5     # recharge time of a single step
-time_discharge = 1.5    # discharge time of a single step
+time_recharge = 0.7     # recharge time of a single step
+time_discharge = 1.2    # discharge time of a single step
 
 world_done = 0  # flag for sync with the world
 
