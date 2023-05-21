@@ -59,9 +59,6 @@ WORLD_ONTOLOGY_FILE_PATH = os.path.join(assignment_path, "topological_map", "wor
 WEB_PATH = 'http://bnc/exp-rob-lab/2022-23'
 
 
-set_urgent_time = 15    # sleep time to make every room URGENT at the beginning
-
-
 def timestamp_computation(list):
     """
     Function to clean the queried time stamp for both Rooms and Robot's data property.
@@ -138,7 +135,6 @@ def build_world():
 
     rospy.sleep(2)
 
-    # This process is done to make every room URGENT at the beginning  
     # Start the timestamp in every location to retrieve when a location becomes urgent
     # Visit and timestamp for R1
     client.call('REPLACE', 'OBJECTPROP', 'IND', ['isIn', 'Robot1', 'R1', 'E'])
@@ -155,7 +151,7 @@ def build_world():
     client.call('ADD','DATAPROP','IND',['visitedAt','R1', 'Long', current_time])
     client.call('REASON','','',[''])
 
-    rospy.sleep(set_urgent_time)
+    rospy.sleep(1)
 
     # Visit and timestamp for R2
     client.call('REPLACE', 'OBJECTPROP', 'IND', ['isIn', 'Robot1', 'R2', 'R1'])
@@ -171,7 +167,7 @@ def build_world():
     client.call('ADD','DATAPROP','IND',['visitedAt','R2', 'Long', current_time])
     client.call('REASON','','',[''])
 
-    rospy.sleep(set_urgent_time)
+    rospy.sleep(1)
 
     # Visit and timestamp for R3
     client.call('REPLACE', 'OBJECTPROP', 'IND', ['isIn', 'Robot1', 'R3', 'R2']) 
@@ -187,7 +183,7 @@ def build_world():
     client.call('ADD','DATAPROP','IND',['visitedAt','R3', 'Long', current_time])
     client.call('REASON','','',[''])
 
-    rospy.sleep(set_urgent_time)
+    rospy.sleep(1)
 
     # Visit and timestamp for R4
     client.call('REPLACE', 'OBJECTPROP', 'IND', ['isIn', 'Robot1', 'R4', 'R3'])  
@@ -203,7 +199,7 @@ def build_world():
     client.call('ADD','DATAPROP','IND',['visitedAt','R4', 'Long', current_time])
     client.call('REASON','','',[''])
 
-    rospy.sleep(set_urgent_time)
+    rospy.sleep(1)
     
     client.call('REPLACE', 'OBJECTPROP', 'IND', ['isIn', 'Robot1', anm.INIT_LOCATION, 'R4'])
     client.call('REASON','','',[''])
