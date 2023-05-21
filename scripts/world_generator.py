@@ -2,8 +2,9 @@
 
 """
 .. module:: world_generator
-   :platform: Unix
-   :synopsis: Python code to create the OWL ontology 
+    :platform: Unix
+    :synopsis: Python code to create the OWL ontology 
+
 .. moduleauthor:: Thomas Campagnolo <s5343274@studenti.unige.it>
 
 ROS Node to create the ontology map and initialize the timestamps for the rooms.
@@ -12,31 +13,31 @@ The 2D environment is composed by:
     - 2 corridors (C1, C2);
     - 1 special room (E), this is the charge location and also the init location;
     - 7 doors (D1, D2, D3, D4, D5, D6, D7).
-
-An example of the topological map can be the follow:
-    _________________________________
-	|               				|
-	|		        E               |
-	|				                |
-	|__________D6_______D7__________|
-	|	    |   	|   	|	    |
-	|  R1	|  C1	|  C2	|   R3	|
-	|	    |	    |	    |	    |
-	|	    D1	    |	    D3	    |
-	|	    |	    |	    |	    |
-	|_______|	    |	    |_______|
-	|	    |      D5	    |	    |
-	|	    |	    |	    |	    |
-	|	    D2	    |	    D4	    |
-	|	    |	    |	    |	    |
-	|  R2	|       |	    |   R4	|
-	|_______|_______|_______|_______|
-
-    
+   
 Publishes to:
-    - /world_loading a boolean flag to communicate when the environment is created
-
+    /world_loading: a boolean flag to communicate when the environment is created
 """
+
+
+# An example of the topological map can be the follow:
+#   _________________________________
+# 	|               				|
+# 	|		        E               |
+# 	|				                |
+# 	|__________D6_______D7__________|
+# 	|	    |   	|   	|	    |
+# 	|  R1	|  C1	|  C2	|   R3	|
+# 	|	    |	    |	    |	    |
+# 	|	    D1	    |	    D3	    |
+# 	|	    |	    |	    |	    |
+# 	|_______|	    |	    |_______|
+# 	|	    |      D5	    |	    |
+# 	|	    |	    |	    |	    |
+# 	|	    D2	    |	    D4	    |
+# 	|	    |	    |	    |	    |
+# 	|  R2	|       |	    |   R4	|
+# 	|_______|_______|_______|_______|
+
 
 import rospy
 import rospkg
@@ -64,9 +65,10 @@ def timestamp_computation(list):
     Function to clean the queried time stamp for both Rooms and Robot's data property.
 
     Args:
-        - **list** the list of queried objects section of the Armor service message.
+        list: the list of queried objects section of the Armor service message.
+
     Returns:
-        - **timestamp** elements of time information
+        timestamp: elements of time information
     
     """
 
@@ -80,9 +82,9 @@ def timestamp_computation(list):
 
 def build_world():
     """
-    This main function initialize the `world_generator_node`, the publisher and allows to use the 
+    This main function initialize the :mod:`world_generator` node, the publisher and allows to use the 
     `Armor commands <https://github.com/EmaroLab/armor/blob/master/commands.md>`_ to create the final ontology.
-    It will publish a boolean that will be passed to the state ``BUILD_WORLD`` of the FSM, advertised by :mod:`Build_world`.
+    It will publish a boolean that will be passed to the state ``BUILD_WORLD`` of the FSM, advertised by :mod:`fsm_behaviour`.
 
     """
 

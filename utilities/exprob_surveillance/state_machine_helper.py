@@ -1,17 +1,15 @@
 #!/usr/bin/env python
-
 """
 .. module:: state_machine_helper
-	:platform: Unix
+    :platform: Unix
 	:synopsis: Python module for the Helper of the State Machine
    
 .. moduleauthor:: Thomas Campagnolo <s5343274@studenti.unige.it>
 
-ROS node in support of the main node `fsm_behaviour`. The software architecture allows initializing a 
+ROS node in support of the main node :mod:`fsm_behaviour`. The software architecture allows initializing a 
 helper class for the Final State Machine which controls the behavior of a surveillance robot. 
-This node allows to have cleaner and more readable code in the fsm_behaviour.py node, in fact, every task
+This node allows to have cleaner and more readable code in the ``fsm_behaviour.py`` node, in fact, every task
 called in the previously mentioned code is defined in the current code.
-
 """
 
 import rospkg
@@ -29,10 +27,14 @@ from std_msgs.msg import Bool
 
 class Helper:
     """
-    
+    This class is created to decouple the implementation of the Finite State Machine, allowing to have a more readable and cleaner code in the ``fsm_behaviour.py`` node.
     """
     def __init__(self):
         """
+        Function that initializes the class Helper.
+		
+		Args:
+			self: instance of the current class.
         
         """
 
@@ -49,11 +51,11 @@ class Helper:
 
     def world_callback(self, data):
         """ 
-        Callback function for the map publisher */world_loading*, that modifies the value of the global variable **world_loaded** and will let the code start.
+        Callback function for the map publisher ``/world_loading``, that modifies the value of the global variable ``world_loaded`` and will let the code start.
 
         Args:
 			self: instance of the current class
-            data: data in the topic `/world_loading`
+            data: data in the topic ``/world_loading``
 
         Returns:
 			self.world_loaded: Bool value that states the flag of the generation of the world
@@ -69,14 +71,13 @@ class Helper:
         
         return self.world_loaded
     
-
     def battery_callback(self, data):
         """ 
-        Callback function for the map publisher */battery_signal*, that modifies the value of the **global variable battery_status** and will let the code start.
+        Callback function for the map publisher ``/battery_signal``, that modifies the value of the global variable ``battery_status`` and will let the code start.
 
         Args:
 			self: instance of the current class
-            data: data in the topic `/battery_signal`
+            data: data in the topic ``/battery_signal``
 
         Returns:
 			self.battery_status: Bool value that states the flag about the battery status
@@ -91,20 +92,19 @@ class Helper:
 
         return self.battery_status
     
-
     def path_planning(self, listNow, listDes, robPos):
         """
         This method is needed to plan the path from one position to another, recursively scanning the list of reachable point for the robot 
         and the connected area to the desired position.
 
         Args
-            - **self** instance of the current class
-            - **l1** the list of string from querying the *connectedTo* data property of the actual robot position
-            - **l2** the list of string from querying the *connectedTo* data property of the desired robot location
-            - **robPos** the actual robot position in the moment the function is called for checking operation
+            self: instance of the current class
+            l1: the list of string from querying the *connectedTo* data property of the actual robot position
+            l2: the list of string from querying the *connectedTo* data property of the desired robot location
+            robPos: the actual robot position in the moment the function is called for checking operation
         
         Returns
-            - **self.shared_location** the shared location between the two lists
+            self.shared_location: the shared location between the two lists
 
         """
 
@@ -126,11 +126,11 @@ class Helper:
         Method to rewrite the queried timestamp for both Rooms and Robot's data property.
 
         Args
-            - **self** instance of the current class
-            - **time_list** of queried objects section of the Armor service message
+            self: instance of the current class
+            time_list: queried objects section of the Armor service message
         
         Returns
-            - **self.timestamp** the integer value between the double quotes of the OWL, saved as list of string
+            self.timestamp: the integer value between the double quotes of the OWL, saved as list of string
         
         """
         self.timestamp = ''
@@ -145,11 +145,11 @@ class Helper:
         Method to rewrite the queried data property list of the room, saving in the returned list as separate strings
 
         Args
-            - **self** instance of the current class
-            - **roomList** of queried objects section of the Armor service message
+            self: instance of the current class
+            roomList: queried objects section of the Armor service message
 
         Returns
-            - **self.location_list** the list of strings of locations
+            self.location_list: the list of strings of locations
         
         """
         self.location_list = []
@@ -174,11 +174,11 @@ class Helper:
 
     def robot_location(self, isInList):
         """
-        Method to extract the element of the queried *isIn* robot's object property.
+        Method to extract the element of the queried ``isIn`` robot's object property.
 
         Args
-            - **self** instance of the current class
-            - **isInList** of queried objects section of the Armor service message
+            self: instance of the current class
+            isInList: queried objects section of the Armor service message
                     
         """
         for i in isInList:
@@ -199,14 +199,14 @@ class Helper:
             
     def set_urgency(self):
         """
-        Method that set to 1 (True) the urgency flag if there are some rooms in the `urgency_rooms' list,
-        otherwise the flag will be set to 0.
+        Method that set to ``1`` (True) the urgency flag if there are some rooms in the ``urgency_rooms`' list,
+        otherwise the flag will be set to ``0``.
 
         Args
-            - **self** instance of the current class
+            self: instance of the current class
 
         Returns
-            - **self.urgency_status** Bool value that states the flag about the urgency status
+            self.urgency_status: Bool value that states the flag about the urgency status
             
         """
 
@@ -217,17 +217,16 @@ class Helper:
         
         return self.urgency_status
 
-
     def urgency(self):
         """
-        Method that recursively checks on the *urgent_rooms* list if there are some URGENT rooms.
-        If the list is empty the flag *urgency_status* is set to 0 (False), otherwise if there are some urgent rooms the flag will be set to 1.
+        Method that recursively checks on the ``urgent_rooms`` list if there are some ``URGENT`` rooms.
+        If the list is empty the flag ``urgency_status`` is set to ``0`` (False), otherwise if there are some urgent rooms the flag will be set to ``1``.
 
         Args
-            - **self** instance of the current class
+            self: instance of the current class
 
         Returns
-            - **self.urgent_rooms** list of the urgent rooms, modified in the :mod:`Surveillance` status.
+            self.urgent_rooms: list of the urgent rooms, modified in the :mod:`Surveillance` status.
 
         """
 
@@ -242,6 +241,7 @@ class Helper:
         self.urgent_rooms = self.rooms_search(self.query_urgent.queried_objects) 
         random.shuffle(self.urgent_rooms)
 
+        # set the urgency flag
         self.set_urgency()
             
         return self.urgent_rooms
@@ -251,17 +251,17 @@ class Helper:
         Method used when the Robot has to change its position in the environment.
         
         This is the main function that define the motion of the robot in the map and takes the help of three other functions 
-            - :mod:`rooms_search`; 
-            - :mod:`path_planning`; 
-            - :mod:`time_set`.
+            - ``rooms_search``; 
+            - ``path_planning``; 
+            - ``time_set``.
 
         Args
-            - **self** instance of the current class
-            - **robPos** is the actual robot position when this function is called
-            - **desPos** is the desired robot position
+            self: instance of the current class
+            robPos: is the actual robot position when this function is called
+            desPos: is the desired robot position
         
         Returns
-            - **robot_position** the updated robot position at the end of the movement, when the location is changed
+            robot_position: the updated robot position at the end of the movement, when the location is changed
 
         """
 

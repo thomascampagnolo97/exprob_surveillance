@@ -1,23 +1,22 @@
 #!/usr/bin/env python
-
 """
 .. module:: battery
-   :platform: Unix
-   :synopsis: Python code to change the battery level
+    :platform: Unix
+    :synopsis: Python code to change the battery level
+
 .. moduleauthor:: Thomas Campagnolo <s5343274@studenti.unige.it>
 
 ROS node which defines the behavior of the robot battery. This node simulate quite realistically the battery discharge 
-and charge cycles with the use of a counter variable `battery_level` and the time parameters `time_discharge` and `time_recharge`.
-If the battery is fully charged, the `battery_status` is published at 1. If instead the battery level is below the minimum threshold 
-then `battery_status` is 0. Depending on this, the :mod:`fsm_behaviour` changes its execution between `RECHARGING` state and all the others states.
+and charge cycles with the use of a counter variable ``battery_level`` and the time parameters ``time_discharge`` and ``time_recharge``.
+If the battery is fully charged, the ``battery_status`` is published to ``1``. If instead the battery level is below the minimum threshold 
+then ``battery_status`` is ``0``. Depending on this, the :mod:`fsm_behaviour` changes its execution between ``RECHARGING`` state and all the others states.
 
 Publishes to:
-    - /battery_signal a boolean flag to communicate when battery is low and when is totally charged
+    /battery_signal: a boolean flag to communicate when battery is low and when is totally charged
 
 Subscribes  to:
-    - /world_battery_sync a Boolean flag for synchronization reasons with the :mod:`fsm_behaviour` node. When the world is correctly loaded
-      the battery's functionality start its execution.
-
+    /world_battery_sync: a Boolean flag for synchronization reasons with the :mod:`fsm_behaviour` node. When the world is correctly loaded
+    the battery's functionality start its execution.
 """
 
 import rospy
@@ -40,7 +39,7 @@ threshold = 4   # minimum battery charge threshold
 
 def world_callback(data):
     """ 
-    Callback function for the fsm publisher */world_battery_sync*, that modifies the value of the global variable **world_done** and will let the code start. 
+    Callback function for the fsm publisher ``/world_battery_sync``, that modifies the value of the global variable ``world_done`` and will let the code start. 
     
     """
 
@@ -55,16 +54,16 @@ def world_callback(data):
 
 def battery_discharge(level):
     """
-    This function defines the battery discharge cycle. Starting from the maximum capacity (`BATTERY_CAPACITY`), 
+    This function defines the battery discharge cycle. Starting from the maximum capacity (``BATTERY_CAPACITY``), 
     the level is decreased in steps of 2 for each discharge time parameter.
-    If the level reaches values lower than or equal to the minimum charge `threshold`, the `battery_status` is set to 0. 
+    If the level reaches values lower than or equal to the minimum charge ``threshold``, the ``battery_status`` is set to ``0``. 
     This indicates that the battery is low and must be recharged.
 
     Args:
-        - **level** counter variable that simulates the dynamic level of the battery during the cycle
+        level: counter variable that simulates the dynamic level of the battery during the cycle
 
     Returns:
-        - **battery_status** the battery flag
+        battery_status: the battery flag
 
     """
 
@@ -82,14 +81,14 @@ def battery_recharge(level):
     """
     This function defines the battery recharge cycle. Starting from the min capacity reached in the discharge cycle, 
     the level is increased in steps of 2 for each recharge time parameter.
-    When the level reach the maximum capacity (`BATTERY_CAPACITY`) value, the `battery_status` is set to 1. 
+    When the level reach the maximum capacity (``BATTERY_CAPACITY``) value, the ``battery_status`` is set to ``1``. 
     This indicates that the battery is fully recharged.
 
     Args:
-        - **level** counter variable that simulates the dynamic level of the battery during the cycle
+        level: counter variable that simulates the dynamic level of the battery during the cycle
 
     Returns:
-        - **battery_status** the battery flag
+        battery_status: the battery flag
         
     """
 
@@ -106,7 +105,7 @@ def battery_recharge(level):
 def main_battery_behaviour():
     """
     Function that define the battery behaviour with the initialization of the battery node.
-    For synchronization with the FSM, this funcionality start its execution when :mod:`world_callback` returns 1, advertised by :mod:`fsm_behaviour` node.
+    For synchronization with the FSM, this funcionality start its execution when :mod:`world_callback` returns ``1``, advertised by :mod:`fsm_behaviour` node.
     The boolean value of the battery to the state ``battery_status`` is advertised by :mod:`battery_discharge` and :mod:`battery_recharge`,
     and published in the dedicated topic.
     

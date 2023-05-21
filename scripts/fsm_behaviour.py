@@ -1,28 +1,30 @@
 #!/usr/bin/env python
-
 """
 .. module:: fsm_behaviour
-   :platform: Unix
-   :synopsis: Python code of the finite state machine for the robot
+    :platform: Unix
+    :synopsis: Python code of the finite state machine for the robot
+    
 .. moduleauthor:: Thomas Campagnolo <s5343274@studenti.unige.it>
 
-Overview:
+**Overview**
+
 The scenario involves a robot deployed in a indoor environment for surveillance purposes.
 This is finite state machine that uses the `Smach tool <https://wiki.ros.org/smach>`_ to implement it in ROS. 
+
 The FSM menages the surveillance behavior of the robot. It moves among locations with this policy:
-    - it should mainly stay on corridors,
-    - if a reachable room has not been visited for 20 seconds, the room become **URGENT** and the robot must visit it. 
-When the robot's battery is low, it goes in the E location, and wait for some times (recharging action in `battery_node`) before to
+    1. it should mainly stay on corridors,
+    2. if a reachable room has not been visited for 20 seconds, the room become **URGENT** and the robot must visit it.
+
+When the robot's battery is low, it goes in the E location, and wait for some times (recharging action in :mod:`battery` node) before to
 start again with the above behaviour.
 
 Publishes to:
-    - /world_battery_sync a Boolean flag for synchronization reasons with the :mod:`battery` node. When the world is correctly loaded
-      the battery's functionality start its execution
+    /world_battery_sync: a Boolean flag for synchronization reasons with the :mod:`battery` node. When the world is correctly loaded 
+    the battery's functionality start its execution
 
 Subscribes  to:
-    - /world_loading a Boolean flag to communicate when the map is created correctly.
-    - /battery_signal a Boolean flag to communicate when battery is low and when is fully charged
-
+    /world_loading: a Boolean flag to communicate when the map is created correctly.
+    /battery_signal: a Boolean flag to communicate when battery is low and when is fully charged
 """
 
 import rospkg
@@ -86,27 +88,24 @@ class bcolors:
     ENDC = '\033[0m'
 
 
- 
-
 class Build_world(smach.State):
-
     """
-    Class that defines the *BUILD_WORLD* state, in which the code waits for the enviroment to be created.
-    When the map is received and loaded the **world_loaded** boolean variable will be set to True, the robot will enter in 
-    the Corridor and the outcome *TRANS_WORLD_DONE* will make the state end to switch to the next state *NO_EMERGENCY*.
+    Class that defines the ``BUILD_WORLD`` state, in which the code waits for the enviroment to be created.
+    When the map is received and loaded the ``world_loaded`` boolean variable will be set to True, the robot will enter in 
+    the Corridor and the outcome *TRANS_WORLD_DONE* will make the state end to switch to the next state ``NO_EMERGENCY``.
 
     Args
-        - **smachState** State base interface
+        smachState: State base interface
     
     Returns
-        - **TRANS_WAITING_MAP** transition that will keep the FSM active in this state
-        - **TRANS_WORLD_DONE** transition condition that will make this state end and go to the new next state *NO_EMERGENCY*
+        TRANS_WAITING_MAP: transition that will keep the FSM active in this state
+        TRANS_WORLD_DONE: transition condition that will make this state end and go to the new next state ``NO_EMERGENCY``
 
     """
 
     def __init__(self, helper):
         """ 
-		Method that initializes the state BUILD_WORLD
+		Method that initializes the state ``BUILD_WORLD``
 		
 		Args:
 			self: instance of the current class
@@ -170,28 +169,30 @@ class Build_world(smach.State):
 
 class No_emergency(smach.State):
     """
-    Class that defines the *NO_EMERGENCY* state.
-    The robot will stay in the corridors until any room becomes *URGENT*. The logic is:
-        - the robot will start in one corridor;
-        - if no room is URGENT, the robot stays in the corridor 3 seconds and change to the other corridor with the function ``motion_control(robPos, desPos)`` (no transition to the other states);
-        - if one or more rooms becomes URGENT, the FSM goes to the state *SURVEILLANCE*.
+    Class that defines the ``NO_EMERGENCY`` state.
+    The robot will stay in the corridors until any room becomes **URGENT**.
 
-    **Important**: the state gets notified by the :mod:`battery_callback` which is the callback of the topic `/battery_signal` with higher priority. 
+    The logic is:
+        - the robot will start in one corridor;
+        - if no room is URGENT, the robot stays in the corridor 3 seconds and change to the other corridor with the function ``motion_control`` in :mod:`state_machine_helper`
+        - if one or more rooms becomes *URGENT*, the FSM goes to the state ``SURVEILLANCE``.
+
+    **Important**: the state gets notified by the ``battery_callback`` in :mod:`battery` which is the callback of the topic ``/battery_signal`` with higher priority. 
     This interrupt any other action performed in the other states.
     
     Args
-        - **smachState** State base interface
+        smachState: State base interface
     
     Returns
-        - **TRANS_BATTERY_LOW** transition that change status going to the *Recharging*
-        - **TRANS_URGENT_ROOM** transition that will make this state end and go to the *Surveillance*
-        - **TRANS_NO_URGENT_ROOM** loop transition that will keep the FSM active in this state
-
+        TRANS_BATTERY_LOW: transition that change status going to the ``RECHARGING``
+        TRANS_URGENT_ROOM: transition that will make this state end and go to the ``SURVEILLANCE``
+        TRANS_NO_URGENT_ROOM: loop transition that will keep the FSM active in this state
+        
     """
     
     def __init__(self, helper):
         """ 
-		Method that initializes the state NO_EMERGENCY
+		Method that initializes the state ``NO_EMERGENCY``
 		
 		Args:
 			self: instance of the current class
@@ -304,21 +305,21 @@ class No_emergency(smach.State):
 
 class Recharging(smach.State):
     """
-    Class that defines the *RECHARGING* state.
-    The battery charge is low, advertised by :mod:`battery_callback`, which will modify the variable flag *battery_status*
+    Class that defines the ``RECHARGING`` state.
+    The battery charge is low, advertised by ``battery_callback`` in :mod:`battery`, which will modify the variable flag ``battery_status``.
     
     Args
-        - **smachState** State base interface
+        smachState: State base interface
     
     Returns
-        - **TRANS_BATTERY_CHARGED** transition that changes status, going back to the *NO_EMERGENCY* state
-        - **TRANS_BATTERY_LOW** loop transition that will keep the FSM active in this state as long as the battery becomes fully recharged
+        TRANS_BATTERY_CHARGED: transition that changes status, going back to the ``NO_EMERGENCY`` state
+        TRANS_BATTERY_LOW: loop transition that will keep the FSM active in this state as long as the battery becomes fully recharged
 
     """
     
     def __init__(self, helper):
         """ 
-		Method that initializes the state RECHARGING
+		Method that initializes the state ``RECHARGING``
 		
 		Args:
 			self: instance of the current class
@@ -368,23 +369,22 @@ class Recharging(smach.State):
 
 class Surveillance(smach.State):
     """
-    Class that defines the *SURVEILLANCE* state. Only when the *urgency_status* variable is 1 the robot must visit the urgency rooms.
-    It calls the :mod:`motion_control(robPos, desPos)` function to move the robot and gets advertised by the :mod:`battery_callback` in case of battery low.
+    Class that defines the ``SURVEILLANCE`` state. Only when the ``urgency_status`` variable is ``1`` the robot must visit the urgency rooms.
+    It calls the ``motion_control`` function in :mod:`state_machine_helper` to move the robot and gets advertised by the ``battery_callback`` in :mod:`battery` in case of low battery.
 
     Args
-        - **smachState** State base interface
+        smachState: State base interface
     
     Returns
-
-        - **TRANS_BATTERY_LOW** transition that change status to the *RECHARGING* state
-        - **TRANS_NO_URGENT_ROOM** transition that specifies that no other room are urgent anymore and changes status to *NO_EMERGENCY* state
-        - **TRANS_URGENT_ROOM** loop transition that will keep the FSM active in this state
+        TRANS_BATTERY_LOW: transition that change status to the ``RECHARGING`` state
+        TRANS_NO_URGENT_ROOM: transition that specifies that no other room are urgent anymore and changes status to ``NO_EMERGENCY`` state
+        TRANS_URGENT_ROOM: loop transition that will keep the FSM active in this state
     """
     
     
     def __init__(self, helper):
         """ 
-		Method that initializes the state SURVEILLANCE
+		Method that initializes the state ``SURVEILLANCE``
 		
 		Args:
 			self: instance of the current class
@@ -473,7 +473,7 @@ class Surveillance(smach.State):
 
 def main():
     """
-    Main function of the Finite State Machine that initializes the node *fsm_behaviour* using SMACH modules.
+    Main function of the Finite State Machine that initializes the node ``fsm_behaviour`` using SMACH modules.
     This method create the FSM and specifies the states with the relative transitions.
     Since the behaviour of the battery has higher priority with respect to all the other states, here it's initialized
     the subscriber of the battery topic.
