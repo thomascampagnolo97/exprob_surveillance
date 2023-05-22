@@ -152,10 +152,9 @@ Explaining the video
 ------------------------
 https://github.com/thomascampagnolo97/exprob_surveillance/assets/92585673/e6ce4a0e-3907-4520-896b-5c83a049bccf
 
-The video represents the code already running, so the `Load_map` state will not appear in green, while during the whole length of the video is possible to see how the other states exchange the lead in the code.  
-As it shown here, the code is not really fast but every implementation ends in the correct status and position.  
-Some control messages are printed to make the user understand if there's any bug or mistake in the implementation.  
-**BE CAREFUL** if you see the code stuck and the *execute* window printing messages with a format containing ".java" expression, all similar between them and nothing else printing, it means there's an inconsistency in the ontology. This could happen if the user forgets to change correctly the path of the onotology maps used or if any other mistake is present in the code.
+In the main terminal, on the left, it is visible the execution of the `fsm_behaviour.py` node. This node implements the Finite State Machine and shows every transition from one state to another to achieve the desired behavior of the program. 
+On the right, three xterm windows appear once the program is launched. The window at the top is shows the messages given by the aRMOR service. The one in the middle represents the `battery.py` node and shows the battery's level during the discharge and recharge cycle's and is responsible for generating the battery flag to signal when the battery is low. Finally, the one at the bottom is the `world_generator.py` and is responsible for generating the environment and publish the world flag.
+This video reports the execution of the program when the surveillance_random.launch is used.
 
 
 Working hypothesis and environment
