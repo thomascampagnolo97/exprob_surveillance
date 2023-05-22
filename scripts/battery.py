@@ -31,25 +31,25 @@ from exprob_surveillance import architecture_name_mapper as anm
 time_recharge = 0.7     # recharge time of a single step
 time_discharge = 1.5    # discharge time of a single step
 
-world_done = 0  # flag for sync with the world
+sync_status = 0  # flag for sync with the world
 
 battery_level = anm.BATTERY_CAPACITY # initial and max battery capacity
 threshold = 4   # minimum battery charge threshold
 
 
-def world_callback(data):
+def sync_callback(data):
     """ 
-    Callback function for the fsm publisher ``/world_battery_sync``, that modifies the value of the global variable ``world_done`` and will let the code start. 
+    Callback function for the fsm publisher ``/world_battery_sync``, that modifies the value of the global variable ``sync_status`` and will let the code start. 
     
     """
 
-    global world_done
+    global sync_status
 
     if data.data == 0:
-        world_done = 0
+        sync_status = 0
 
     elif data.data == 1:
-        world_done = 1
+        sync_status = 1
 
 
 def battery_discharge(level):
@@ -113,12 +113,12 @@ def main_battery_behaviour():
 
     rospy.init_node(anm.NODE_ROBOT_BATTERY, log_level=rospy.INFO)
 
-    rospy.Subscriber(anm.TOPIC_SYNC_WORLD_BATTERY, Bool, world_callback)    # subscriber world flag for sync
+    rospy.Subscriber(anm.TOPIC_SYNC_WORLD_BATTERY, Bool, sync_callback)    # subscriber world flag for sync
     pub = rospy.Publisher(anm.TOPIC_BATTERY_SIGNAL, Bool, queue_size=10)    # publisher of the battery status flag
     
     while not rospy.is_shutdown():
 
-        if world_done == 1:
+        if sync_status == 1:
             # the world is loaded in the FSM, the battery behaviour starts its execution
             # The battery charge is higher than the min threshold 
             battery_status = battery_discharge(battery_level)   # discharge cycle
