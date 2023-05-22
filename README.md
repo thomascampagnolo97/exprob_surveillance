@@ -54,7 +54,7 @@ This repository contains a ROS package named `exprob_surveillance` that includes
  - [CMakeLists.txt](CMakeLists.txt): File to configure this package.
  - [package.xml](package.xml): File to configure this package.
  - [setup.py](setup.py): File to `import` python modules from the `utilities` folder into the files in the `script` folder. 
- - [launcher/](launcher/): Contains the configuration to launch this package.
+ - [launch/](launcher/): Contains the configuration to launch this package.
     - [surveillance.launch](launcher/surveillance.launch): It launches this package with all the required nodes.
  - [scripts/](scripts/): It contains the implementation of each software component.
     - [fsm_behaviour.py](scripts/fsm_behaviour.py): It implements the finite state machine for the software architecture.
@@ -62,18 +62,22 @@ This repository contains a ROS package named `exprob_surveillance` that includes
     - [battery.py](scripts/battery.py): It implements the management of the robot's battery level.
  - [utilities/exprob_surveillance](utilities/exprob_surveillance/): It contains auxiliary python files, which are exploited by the files in the `scripts` folder.
     - [architecture_name_mapper.py](utilities/exprob_surveillance/architecture_name_mapper.py): It contains the name of each *node*, *topic*, and *parameters* used in this architecture.
-    - [state_machine_helper.py](utilities/exprob_surveillance/state_machine_helper.py): It contains the methods called in the [state_machine.py](scripts/fsm_behaviour.py) node to make the code easier and cleaner to read.
+    - [state_machine_helper.py](utilities/exprob_surveillance/state_machine_helper.py): It contains the methods called in the [fsm_behaviour.py](scripts/fsm_behaviour.py) node to make the code easier and cleaner to read.
  - [diagrams/](diagrams/): It contains the diagrams and the video shown in this README file.
- - [doc/](doc/): It contains the files to visualize the Sphinx documentation.
+ - [docs/](docs/): It contains the files to visualize the Sphinx documentation.
  - [topological_map/](topological_map/): It contains the ontology used in this software architecture.
 
 ### Dependencies
 
 The software exploits [roslaunch](http://wiki.ros.org/roslaunch) and [rospy](http://wiki.ros.org/rospy) for using python with ROS. Rospy allows defining ROS nodes, 
 services, and related messages.
+
 The Finite States Machine using the software components provided in this repository is based on [SMACH](http://wiki.ros.org/smach).
+
 It is possible to check the [tutorials](http://wiki.ros.org/smach/Tutorials) related to SMACH, for an overview of its  functionalities. In addition, it is advised to exploit the [smach_viewer](http://wiki.ros.org/smach_viewer) node to visualize and debug the implemented Finite States Machine.
+
 Another dependency is [xterm](https://manpages.ubuntu.com/manpages/trusty/man1/xterm.1.html) which allows opening multiple terminals to have a clear view of what every single node does while the program is running.
+
 FInally, [Armor](https://github.com/EmaroLab/armor) is essential in this project to use the ontology and ensure the desired behavior thought for the software architecture.
 
 ### State Diagram
@@ -112,8 +116,11 @@ Installation and how to run
 This software is based on ROS Noetic. First, install the dependencies coming from other ROS packages:
 * [aRMOR](https://github.com/EmaroLab/armor) and
 * [SMACH](http://wiki.ros.org/smach).
+
 About ARMOR, if you have a new version of ROS installed on your machine, the suggestion is to follow this [aRMOR procedure](EmaroLab/armor#7).
+
 Instead, if you have an older version of ROS, please refer to the previous one.
+
 In both cases, the procedure explained in the README files should be followed and the needed repositories must be cloned and built in your ROS workspace.
 Another toll is `xterm`. To use this feature the following installing instruction is needed:
 
@@ -148,13 +155,12 @@ If the user wants to see the transitions between the states, the SMACH viewer to
 rosrun smach_viewer smach_viewer.py 
 ```
 
-Explaining the video
+Package execution and video
 ------------------------
 https://github.com/thomascampagnolo97/exprob_surveillance/assets/92585673/e6ce4a0e-3907-4520-896b-5c83a049bccf
 
 In the main terminal, on the left, it is visible the execution of the `fsm_behaviour.py` node. This node implements the Finite State Machine and shows every transition from one state to another to achieve the desired behavior of the program. 
 On the right, three xterm windows appear once the program is launched. The window at the top is shows the messages given by the aRMOR service. The one in the middle represents the `battery.py` node and shows the battery's level during the discharge and recharge cycle's and is responsible for generating the battery flag to signal when the battery is low. Finally, the one at the bottom is the `world_generator.py` and is responsible for generating the environment and publish the world flag.
-This video reports the execution of the program when the surveillance_random.launch is used.
 
 
 Working hypothesis and environment
